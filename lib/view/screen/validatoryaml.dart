@@ -13,10 +13,11 @@ class ValidatorYaml extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ValidatorYamlControllerImp controller =
-        Get.put(ValidatorYamlControllerImp());
+        Get.put(ValidatorYamlControllerImp( context));
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CustomFloatingButton(
+        key: controller.floatingButtonKey,
         textButtonfloating: 'Select a model ',
         onPressed: () {
           controller.selectModel();
@@ -31,6 +32,7 @@ class ValidatorYaml extends StatelessWidget {
           builder: (controller) => ListView(
             children: [
               UploadFileButton(
+                key: controller.pickFileKey,
                 onPressed: () {
                   controller.pickFile();
                 },
@@ -60,6 +62,7 @@ class ValidatorYaml extends StatelessWidget {
                 height: 30,
               ),
               CustomCard(
+                key: controller.resultValidationFormatKey,
                 text: controller.resultValidation,
                 textAlign: TextAlign.center,
               ),
@@ -74,7 +77,7 @@ class ValidatorYaml extends StatelessWidget {
                     fontSize: 25,
                     fontWeight: FontWeight.w800),
               ),
-              CustomCard(text: controller.resultValidationFormat, textAlign: TextAlign.start),
+              CustomCard(key: controller.validateResultKey,text: controller.resultValidationFormat, textAlign: TextAlign.start),
             ],
           ),
         ),

@@ -4,15 +4,24 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:yaml/yaml.dart';
+import 'package:yaml_validator/app_tour_target.dart';
 import 'package:yaml_validator/core/function/createnewfile.dart';
-
 
 abstract class ParseYAMLController extends GetxController {
   pickFile();
 }
 
 class ParseYAMLControllerImp extends ParseYAMLController {
+  final BuildContext context;
+  ParseYAMLControllerImp(this.context);
+  late TutorialCoachMark tutorialCoachMark;
+  final floatingButtonKey = GlobalKey();
+  final resultValidationFormatKey = GlobalKey();
+  final parsingResultKey = GlobalKey();
+  final pickFileKey = GlobalKey();
   FilePickerResult? result;
   File? file;
   late String fileName;
@@ -23,7 +32,6 @@ class ParseYAMLControllerImp extends ParseYAMLController {
   dynamic jsonData = "hello";
   @override
   pickFile() async {
-   
     fileName = "waitng ...";
     update();
     try {
@@ -38,31 +46,31 @@ class ParseYAMLControllerImp extends ParseYAMLController {
         _formatValidation();
       } else {
         Get.defaultDialog(
-  title: "Why Did You Cancel?",
-  middleText: "Hey, don't play with me, please!\nI'm about to call 911...",
+            title: "Why Did You Cancel?",
+            middleText:
+                "Hey, don't play with me, please!\nI'm about to call 911...",
             confirm: TextButton(
                 onPressed: () {
                   Get.back();
                 },
-                child: const  Text("OK!")));
+                child: const Text("OK!")));
       }
     } catch (e) {
       Get.defaultDialog(
-title: "Error" , 
-middleText: "There is an error in accessing the storage." , 
-
-            confirm: TextButton(
-                onPressed: () {
-                  Get.back();
-                },
-                child: const  Text("OK!")));
+          title: "Error",
+          middleText: "There is an error in accessing the storage.",
+          confirm: TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text("OK!")));
     }
   }
 
   _formatValidation() async {
     file = File(result!.files.single.path!);
     fileContent = await file?.readAsString();
-    
+
     try {
       yamlMap = loadYaml(fileContent ?? "hello");
       resultValidation = "YAML data is well-formed.";
@@ -71,8 +79,6 @@ middleText: "There is an error in accessing the storage." ,
       // var s = json.encode(yamlMap);
       // var isValid = validator.validate(jsonDecode(s)).$1;
       // var stringValid = validator.validate(jsonDecode(s)).$2;
-          
-              
 
       // print('Student data is valid: $isValid');
       // print('Student data is valid: $stringValid');
@@ -122,7 +128,7 @@ middleText: "There is an error in accessing the storage." ,
               onPressed: () {
                 Get.back();
               },
-              child: const  Text("OK!")));
+              child: const Text("OK!")));
     }
   }
 
@@ -132,7 +138,32 @@ middleText: "There is an error in accessing the storage." ,
     resultValidation = "not upload file yet ";
     fileName =
         "Please note: The app only accepts .txt files for validation and parsing. Make sure to save your YAML data in a text file (.txt) before proceeding.";
+    if (GetStorage().read("appbar") != null &&
+        GetStorage().read("parser") == null) {
+      showTutorialCoachMarkForParserPage();
+    }
+   
     super.onInit();
+  }
+
+  showTutorialCoachMarkForParserPage() {
+    // print("//////////////////////////////////////////////////////");
+    tutorialCoachMark = TutorialCoachMark(
+        onFinish: () {
+          
+          GetStorage().write("parser", true);
+          
+        },
+        hideSkip: true,
+        targets: parserTarget(
+            floatingButtonKey: floatingButtonKey,
+            parsingResultKey: parsingResultKey,
+            pickFileKey: pickFileKey,
+            resultValidationFormatKey: resultValidationFormatKey),
+        paddingFocus: 12,
+        opacityShadow: 0.8,
+        colorShadow: const Color.fromARGB(255, 0, 0, 0));
+    tutorialCoachMark.show(context: context);
   }
 }
 

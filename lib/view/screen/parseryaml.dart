@@ -11,10 +11,11 @@ class ParserYaml extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  ParseYAMLControllerImp controller =  Get.put(ParseYAMLControllerImp());
+  ParseYAMLControllerImp controller =  Get.put(ParseYAMLControllerImp(context));
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: CustomFloatingButton(
+        key: controller.floatingButtonKey,
         textButtonfloating: 'Download Parsed YAML',
         onPressed: () {
           controller.saveFile();
@@ -29,6 +30,7 @@ class ParserYaml extends StatelessWidget {
           builder: (controller) => ListView(
             children: [
               UploadFileButton(
+                key: controller.pickFileKey,
                 onPressed: () {
                   controller.pickFile();
                 },
@@ -37,6 +39,7 @@ class ParserYaml extends StatelessWidget {
                 height: 10,
               ),
               Container(
+
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text(
                   controller.fileName,
@@ -58,6 +61,7 @@ class ParserYaml extends StatelessWidget {
                 height: 30,
               ),
               CustomCard(
+                key: controller.resultValidationFormatKey,
                 text: controller.resultValidation,
                 textAlign: TextAlign.center,
               ),
@@ -72,7 +76,7 @@ class ParserYaml extends StatelessWidget {
                     fontSize: 25,
                     fontWeight: FontWeight.w800),
               ),
-              CustomCard(text: controller.jsonData, textAlign: TextAlign.start),
+              CustomCard(key: controller.parsingResultKey,text: controller.jsonData, textAlign: TextAlign.start),
             ],
           ),
         ),

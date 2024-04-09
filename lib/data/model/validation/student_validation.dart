@@ -8,10 +8,16 @@ class StudentValidator {
       if (data.containsKey("students") && data["students"] is List) {
         List<dynamic> students = data["students"];
         for (var student in students) {
+          // print(!_validateStudent(student).$1);
           if (!_validateStudent(student).$1) {
             // print(student["grad"]);
-
+            // print("////////////////////////////////");
+            // print(!student.containsKey('name'));
+            // print(!student.containsKey('family_name'));
+            // print(!student.containsKey('age'));
             // print(!student.containsKey('grad'));
+            // print("////////////////////////////////");
+
             // print("khadado");
             return _validateStudent(student);
           }
@@ -40,9 +46,8 @@ class StudentValidator {
         "There is a missing field; one of the following: name, family name, or age grade."
       );
     }
-   if (studentData.length != 4 &&
-    !(studentData.length == 5 && studentData.containsKey('email'))) {
-      
+    if (studentData.length != 4 &&
+        !(studentData.length == 5 && studentData.containsKey('email'))) {
       return (false, "Unexpected fields found in the student data.");
     }
 

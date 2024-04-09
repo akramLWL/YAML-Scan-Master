@@ -10,10 +10,11 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AppBarControllerImpl());
+    Get.put(AppBarControllerImpl(context));
+    
     return GetBuilder<AppBarControllerImpl>(
         builder: (controller) =>  Scaffold(
-      bottomNavigationBar: const  ButtomAppBar(),
+      bottomNavigationBar:   ButtomAppBar(key: controller.appBarkey),
       body: navigationItemList[controller.activePage].page,
       ),
     );

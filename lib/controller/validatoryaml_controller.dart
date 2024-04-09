@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:yaml/yaml.dart';
+import 'package:yaml_validator/app_tour_target.dart';
 import 'package:yaml_validator/core/function/showbuttomsheet.dart';
 import 'package:yaml_validator/data/datasourse/static/validationmodellist.dart';
-
 
 abstract class ValidatorYamlController extends GetxController {
   pickFile();
@@ -15,13 +17,19 @@ abstract class ValidatorYamlController extends GetxController {
 }
 
 class ValidatorYamlControllerImp extends ValidatorYamlController {
+  final BuildContext context;
+  ValidatorYamlControllerImp(this.context);
   FilePickerResult? result;
   File? file;
   late String fileName;
   late String resultValidation;
   late String resultValidationFormat;
   late int activeModel;
-
+  late TutorialCoachMark tutorialCoachMark;
+  final floatingButtonKey = GlobalKey();
+  final resultValidationFormatKey = GlobalKey();
+  final validateResultKey = GlobalKey();
+  final pickFileKey = GlobalKey();
   String? fileContent;
   dynamic jsonFormat;
   dynamic yamlMap;
@@ -60,7 +68,7 @@ class ValidatorYamlControllerImp extends ValidatorYamlController {
                   onPressed: () {
                     Get.back();
                   },
-                  child:const  Text("OK!")));
+                  child: const Text("OK!")));
         }
       } catch (e) {
         // print(e);
@@ -106,8 +114,9 @@ class ValidatorYamlControllerImp extends ValidatorYamlController {
   _validate() {
     var validator = validationModelList[activeModel].model;
     var s = json.encode(yamlMap);
-    
-    var stringValid =  "selected model : ${validationModelList[activeModel].title} \n${validator.validate(jsonDecode(s)).$2}";
+
+    var stringValid =
+        "selected model : ${validationModelList[activeModel].title} \n${validator.validate(jsonDecode(s)).$2}";
 
     resultValidationFormat = stringValid;
     update();
@@ -118,6 +127,23 @@ class ValidatorYamlControllerImp extends ValidatorYamlController {
     showModels();
   }
 
+  showTutorialCoachMarkForValidatorPage() {
+    tutorialCoachMark = TutorialCoachMark(
+        onFinish: () {
+          GetStorage().write("validator", true);
+        },
+        hideSkip: true,
+        targets: validatorTarget(
+            floatingButtonKey: floatingButtonKey,
+            parsingResultKey: validateResultKey,
+            pickFileKey: pickFileKey,
+            resultValidationFormatKey: resultValidationFormatKey),
+        paddingFocus: 12,
+        opacityShadow: 0.8,
+        colorShadow: const Color.fromARGB(255, 0, 0, 0));
+    tutorialCoachMark.show(context: context);
+  }
+
   @override
   void onInit() {
     jsonData = "upload file first.";
@@ -126,6 +152,11 @@ class ValidatorYamlControllerImp extends ValidatorYamlController {
         "Please note: The app only accepts .txt files for validation and parsing. Make sure to save your YAML data in a text file (.txt) before proceeding.";
     activeModel = -1;
     resultValidationFormat = "Please select a model before proceeding.";
+  
+    if (GetStorage().read("validator") == null) {
+      showTutorialCoachMarkForValidatorPage();
+    }
+
     super.onInit();
   }
 }

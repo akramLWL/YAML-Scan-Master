@@ -7,7 +7,7 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: const Color.fromARGB(255, 230, 230, 230),
       child: Container(
         alignment: Alignment.center,
         constraints: const BoxConstraints(minHeight: 100, minWidth: 100),
@@ -15,6 +15,7 @@ class CustomCard extends StatelessWidget {
         child: Text(
           text,
           textAlign: textAlign,
+         style:const  TextStyle( fontSize: 15 , fontWeight: FontWeight.w400),
         ),
       ),
     );

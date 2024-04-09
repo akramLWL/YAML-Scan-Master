@@ -10,13 +10,13 @@ class ButtomAppBar extends GetView<AppBarControllerImpl> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AppBarControllerImpl);
+    Get.put(AppBarControllerImpl(context));
     return Container(
       
       color: Colors.white, // Set background color to white
       child: BottomAppBar(
         color: Colors.white,
-        child: Row(
+        child: GetBuilder<AppBarControllerImpl>(builder: (controller) =>  Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ...List.generate(
@@ -29,7 +29,7 @@ class ButtomAppBar extends GetView<AppBarControllerImpl> {
               ),
             ),
           ],
-        ),
+        ),)         
       ),
     );
   }

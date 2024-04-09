@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       getPages: routes,
-      title: "dede ",
+      title: "yaml_validator",
     );
   }
 }

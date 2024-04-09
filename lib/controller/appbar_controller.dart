@@ -13,10 +13,11 @@ abstract class AppBarController extends GetxController {
 
 class AppBarControllerImpl extends AppBarController {
   final BuildContext context;
+  AppBarControllerImpl(this.context);
   final appBarkey = GlobalKey();
   late TutorialCoachMark tutorialCoachMark;
   late int activePage;
-  AppBarControllerImpl(this.context);
+  
   @override
   void onchanged(int currentPage) {
     activePage = currentPage;
@@ -26,11 +27,12 @@ class AppBarControllerImpl extends AppBarController {
   @override
   void onInit() async {
     activePage = 0;
-   
+    update();
+
     if (GetStorage().read("appbar") == null) {
       await showTutorialCoachMarkForAppBar();
 
-      await Future.delayed(const Duration(seconds: 2));
+      // await Future.delayed(const Duration(seconds: 2));
     }
 
     super.onInit();
